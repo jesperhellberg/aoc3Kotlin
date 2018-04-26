@@ -1,25 +1,31 @@
+import kotlin.math.abs
+import kotlin.math.ceil
+import kotlin.math.sqrt
+
 fun main(args: Array<String>) {
     val logic = Logic()
 
-    println(logic.distanceTo1(347991))
+    println(logic.version1(347991))
     println(logic.version2(347991))
-
+    println(logic.version1_naive(347991))
 }
 
 class Logic {
 
-    fun distanceTo1(square: Int):Int {
-        val coord = getCoord(square)
-        return Math.abs(coord.first ) + Math.abs(coord.second)
+    fun version1(square: Int): Int {
+        var side = ceil(sqrt(square.toDouble())).toInt()
+        if (side % 2 == 0) { side ++ }
+        val corners = (0..3).map { side * side - it * (side - 1) }
+        val distanceToCorner = corners.map { abs(it - square) }.min()
+        return side - 1 - distanceToCorner!!
     }
 
-
-    fun getCoord(max: Int) : Pair<Int, Int> {
+    fun version1_naive(square: Int):Int {
         var (x, y, stepsBeforeTurn, stepstaken) = listOf(0, 0, 0, 0)
         var xAxis = false
         var positive = false
 
-        for(squarenumber in 2..max){
+        for(squarenumber in 2..square){
             if (stepstaken == stepsBeforeTurn) {
                 if (!xAxis) {
                     positive = !positive
@@ -43,7 +49,7 @@ class Logic {
             stepstaken++
 
         }
-        return Pair(x, y)
+        return Math.abs(x) + Math.abs(y)
     }
 
 
